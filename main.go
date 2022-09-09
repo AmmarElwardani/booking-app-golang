@@ -4,49 +4,30 @@ import (
 	"fmt"
 	"strings"
 )
-
+const conferenceTickets = 50
+var conferenceName = "Go Conference"
+var remainingTickets uint = 50
+var bookings = []string{}
 func main(){
-	conferenceName := "Go Conference"
-	const conferenceTickets = 50
-	var remainingTickets uint = 50
 
-	greetingUsers(conferenceName,conferenceTickets, remainingTickets)
 
-	var bookings = []string{}
+	greetingUsers()
+
+
 
 	for {
 
-		var firstName string
-		var lasttName string
-		var email string
-		var userTicket uint
+		firstName, lasttName, email, userTicket := getUserInput()
+		
 
-		// ask for their name
-		fmt.Println("Enter your first name:")
-		fmt.Scan(&firstName)
-		fmt.Println("Enter your last name:")
-		fmt.Scan(&lasttName)
-		fmt.Println("Enter your email:")
-		fmt.Scan(&email)
-
-		fmt.Println("Enter number of tickets")
-		fmt.Scan(&userTicket)
-
-		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lasttName, email, userTicket, remainingTickets)
+		isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lasttName, email, userTicket)
 
 		if isValidName && isValidEmail && isValidTicketNumber{
 		
-			remainingTickets = remainingTickets - userTicket
-			
-			bookings = append(bookings, firstName + " " + lasttName)
-
-			fmt.Printf("Thank you %v %v for booking %v tickets, you will recieve a confirmation email at %v \n",firstName, lasttName, userTicket, email)
-
-			fmt.Printf("%v tickets remaining for %v \n", remainingTickets, conferenceName)
-
+			bookTicket(userTicket, firstName, lasttName, email)
 			// displaying first names
 
-			firstNames := getFirstNames(bookings)
+			firstNames := getFirstNames()
 
 			fmt.Printf("The firstNames of bookings: %v \n", firstNames)
 			if remainingTickets == 0 {
@@ -71,12 +52,12 @@ func main(){
 	}
 }
 
-func greetingUsers(conferenceName string, conferenceTickets int, remainingTickets uint){
+func greetingUsers(){
 	fmt.Printf("Weclome to our %v booking application \n", conferenceName)
 	fmt.Printf("We have total of %v Tickets and %v are still available \n", conferenceTickets, remainingTickets)
 	fmt.Println("Get your tickets here to attend!")
 }
-func getFirstNames(bookings []string) []string{
+func getFirstNames() []string{
 	firstNames :=  [] string{}
 
 	for _, booking := range(bookings){
@@ -88,11 +69,48 @@ func getFirstNames(bookings []string) []string{
 	return firstNames
 }
 
-func validateUserInput(firstName string, lasttName string, email string, userTicket uint, remainingTickets uint)(bool, bool, bool){
+func validateUserInput(firstName string, lasttName string, email string, userTicket uint)(bool, bool, bool){
 
 	isValidName := len(firstName) >= 2 && len(lasttName) >= 2
 	isValidEmail := strings.Contains(email, "@")
 	isValidTicketNumber := userTicket > 0 && userTicket <= remainingTickets 
 
 	return isValidName, isValidEmail, isValidTicketNumber
+}
+
+func getUserInput() (string, string, string, uint){
+
+	var firstName string
+	var lasttName string
+	var email string
+	var userTicket uint
+
+	// ask for their name
+	fmt.Println("Enter your first name:")
+	fmt.Scan(&firstName)
+	fmt.Println("Enter your last name:")
+	fmt.Scan(&lasttName)
+	fmt.Println("Enter your email:")
+	fmt.Scan(&email)
+
+	fmt.Println("Enter number of tickets")
+	fmt.Scan(&userTicket)
+	
+	return firstName, lasttName, email, userTicket
+}
+
+func bookTicket(userTicket uint, firstName string, lasttName string, email string){
+	remainingTickets = remainingTickets - userTicket
+	bookings = append(bookings, firstName + " " + lasttName)
+	fmt.Printf("Thank you %v %v for booking %v tickets, you will recieve a confirmation email at %v \n",firstName, lasttName, userTicket, email)
+
+	fmt.Printf("%v tickets remaining for %v \n", remainingTickets, conferenceName)
+	remainingTickets = remainingTickets - userTicket
+			
+	bookings = append(bookings, firstName + " " + lasttName)
+
+	fmt.Printf("Thank you %v %v for booking %v tickets, you will recieve a confirmation email at %v \n",firstName, lasttName, userTicket, email)
+
+	fmt.Printf("%v tickets remaining for %v \n", remainingTickets, conferenceName)
+
 }
