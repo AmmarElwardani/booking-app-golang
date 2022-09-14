@@ -2,7 +2,10 @@ package main
 
 import (
 	"booking-app/helper"
+	"booking-app/socialMedia"
 	"fmt"
+	"log"
+	"os"
 	"sync"
 	"time"
 )
@@ -22,6 +25,26 @@ var wg = sync.WaitGroup{}
 
 func main(){
 
+	fmt.Println("Go-Twitter Bot v0.01")
+    creds := socialMedia.Credentials{
+        AccessToken:       os.Getenv("ACCESS_TOKEN"),
+        AccessTokenSecret: os.Getenv("ACCESS_TOKEN_SECRET"),
+        ConsumerKey:       os.Getenv("CONSUMER_KEY"),
+        ConsumerSecret:    os.Getenv("CONSUMER_SECRET"),
+    }
+	fmt.Printf("  %v", creds)
+    client, err := socialMedia.GetClient(&creds)
+    if err != nil {
+        log.Println("Error getting Twitter Client")
+        log.Println(err)
+    }
+
+    tweet, resp, err := client.Statuses.Update("A Test Tweet from the future, testing a #90DaysOfDevOps Program that tweets, tweet tweet", nil)
+    if err != nil {
+        log.Println(err)
+    }
+    log.Printf("%+v\n", resp)
+    log.Printf("%+v\n", tweet)
 
 	greetingUsers()
 
