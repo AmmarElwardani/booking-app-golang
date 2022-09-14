@@ -1,8 +1,6 @@
 package socialMedia
 
 import (
-	// other imports
-
 	"log"
 
 	"github.com/dghubble/go-twitter/twitter"
